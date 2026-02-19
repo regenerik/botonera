@@ -79,6 +79,14 @@ export default function App() {
           A("Pan", "🍞", "comida_pan.mp3"),
           A("Factura", "🥐", "comida_factura.mp3"),
           A("Quiero helado", "🍦", "comida_quiero_helado.mp3"),
+          A("Gaseosa", "🥤", "acc_quiero_gaseosa.mp3"),
+          A("Pizza", "🍕", "comida_quiero_pizza.mp3"),
+          A("Hamburguesa", "🍔", "comida_quiero_hamburguesa.mp3"),
+          A("Empanadas", "🥟", "comida_quiero_empanada.mp3"),
+          A("Panchos", "🌭", "comida_quiero_panchos.mp3"),
+          A("Sanguches", "🥪", "comida_quiero_sanguches.mp3"),
+          A("Torta", "🍰", "comida_quiero_torta.mp3"),
+          
         ],
       },
       {
