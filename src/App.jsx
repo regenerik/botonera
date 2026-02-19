@@ -1,9 +1,13 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import "./App.css";
 
 export default function App() {
   const audioRef = useRef(null);
   const [toast, setToast] = useState("");
+  
+  // Estado para el sub-menú flotante
+  const [activeSubMenu, setActiveSubMenu] = useState(null);
+  const subMenuTimer = useRef(null);
 
   const showToast = (msg) => {
     setToast(msg);
@@ -25,6 +29,41 @@ export default function App() {
         .catch(() => showToast(`No pude reproducir: ${file}`));
     } catch (e) {
       showToast("Error reproduciendo audio");
+    }
+  };
+
+  const closeSubMenu = () => {
+    setActiveSubMenu(null);
+    clearTimeout(subMenuTimer.current);
+  };
+
+  // Manejador centralizado de clicks
+  const handleAction = (item, e) => {
+    playSound(item.audio, item.label);
+    
+    // Detectamos si es un botón de agua (en cualquier panel)
+    if (item.label.toLowerCase().includes("agua")) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      
+      setActiveSubMenu({
+        // ID único combinando label y posición para evitar conflictos
+        id: item.label + rect.top,
+        x: rect.left + rect.width / 2,
+        y: rect.top,
+        options: [
+          { label: "Fría", emoji: "❄️", audio: "comida_agua_fria.mp3" },
+          { label: "Tíbia", emoji: "🔥", audio: "comida_agua_tibia.mp3" },
+          { label: "Poca", emoji: "🤏", audio: "comida_agua_poca.mp3" },
+          { label: "Mucha", emoji: "🌊", audio: "comida_agua_mucha.mp3" },
+        ]
+      });
+
+      // Auto-cierre en 3 segundos
+      clearTimeout(subMenuTimer.current);
+      subMenuTimer.current = setTimeout(closeSubMenu, 3000);
+    } else {
+      // Si toca cualquier otra cosa, cerramos sub-menús abiertos
+      closeSubMenu();
     }
   };
 
@@ -147,7 +186,7 @@ export default function App() {
   );
 
   return (
-    <div className="app">
+    <div className="app" onClick={(e) => e.target === e.currentTarget && closeSubMenu()}>
       <header className="header">
         <h1 className="h1">Botonera</h1>
         <p className="sub">Botones grandes y panel rápido.</p>
@@ -160,7 +199,7 @@ export default function App() {
               <button
                 key={b.label}
                 className={`card card--xl ${b.label === "Sí" ? "yes" : "no"}`}
-                onClick={() => playSound(b.audio, b.label)}
+                onClick={(e) => handleAction(b, e)}
               >
                 <div className="emoji big">{b.emoji}</div>
                 <div className="label big">{b.label}</div>
@@ -175,7 +214,7 @@ export default function App() {
                 <button
                   key={item.label}
                   className="card"
-                  onClick={() => playSound(item.audio, item.label)}
+                  onClick={(e) => handleAction(item, e)}
                 >
                   <div className="emoji">{item.emoji}</div>
                   <div className="label">{item.label}</div>
@@ -189,7 +228,7 @@ export default function App() {
             <div className="accordion">
               {categories.map((cat) => (
                 <details key={cat.name} className="category">
-                  <summary className="summary">
+                  <summary className="summary" onClick={closeSubMenu}>
                     <div className="summaryLeft">
                       <div className="summaryEmoji">{cat.emoji}</div>
                       <div className="summaryText">
@@ -205,7 +244,7 @@ export default function App() {
                         <button
                           key={item.label}
                           className="card"
-                          onClick={() => playSound(item.audio, item.label)}
+                          onClick={(e) => handleAction(item, e)}
                         >
                           <div className="emoji">{item.emoji}</div>
                           <div className="label">{item.label}</div>
@@ -225,7 +264,7 @@ export default function App() {
               <button
                 key={b.label}
                 className="railBtn"
-                onClick={() => playSound(b.audio, b.label)}
+                onClick={(e) => handleAction(b, e)}
               >
                 <span className="railEmoji">{b.emoji}</span>
               </button>
@@ -233,6 +272,32 @@ export default function App() {
           </aside>
         </div>
       </div>
+
+      {/* RENDER DEL SUB-MENÚ FLOTANTE */}
+      {activeSubMenu && (
+        <div 
+          className="sub-menu-popover"
+          style={{ 
+            left: activeSubMenu.x, 
+            top: activeSubMenu.y - 10 
+          }}
+        >
+          {activeSubMenu.options.map(opt => (
+            <button 
+              key={opt.label} 
+              className="sub-menu-item"
+              onClick={(e) => {
+                e.stopPropagation();
+                playSound(`${import.meta.env.BASE_URL}audio/${opt.audio}`, opt.label);
+                closeSubMenu();
+              }}
+            >
+              <span className="sub-emoji">{opt.emoji}</span>
+              <span className="sub-label">{opt.label}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className={`toast ${toast ? "show" : ""}`}>{toast}</div>
     </div>
