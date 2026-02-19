@@ -39,15 +39,11 @@ export default function App() {
 
   // Botones gigantes arriba (SI / NO)
   const topPrimary = useMemo(
-    () => [
-      A("Sí", "👍", "acc_si.mp3"),
-      A("No", "👎", "acc_no.mp3"),
-    ],
+    () => [A("Sí", "👍", "acc_si.mp3"), A("No", "👎", "acc_no.mp3")],
     []
   );
 
   // Panel rápido: lo más usado sin expandir
-  // (mezcla de necesidades básicas + pedidos comunes)
   const quick = useMemo(
     () => [
       A("Tengo hambre", "🍽️", "comida_tengo_hambre.mp3"),
@@ -62,7 +58,24 @@ export default function App() {
     []
   );
 
-  // Categorías expandibles (con emoji en el summary)
+  // ✅ Barra fija derecha (como tu mock)
+  const rail = useMemo(
+    () => [
+      A("Sí", "👍", "acc_si.mp3"),
+      A("No", "👎", "acc_no.mp3"),
+      A("Tengo hambre", "🍽️", "comida_tengo_hambre.mp3"),
+      A("Ir al baño", "🚽", "acc_ir_banio.mp3"),
+      A("Quiero agua", "💧", "comida_agua.mp3"),
+      A("Me duele", "🤕", "emo_me_duele.mp3"),
+      A("Quiero dormir", "🛌", "acc_quiero_dormir.mp3"),
+      A("Quiero compu", "💻", "acc_quiero_compu.mp3"),
+      A("Quiero dibujar", "🎨", "acc_quiero_dibujar.mp3"),
+      A("Quiero jugar", "🧸", "acc_quiero_jugar.mp3"),
+    ],
+    []
+  );
+
+  // Categorías expandibles
   const categories = useMemo(
     () => [
       {
@@ -86,7 +99,6 @@ export default function App() {
           A("Panchos", "🌭", "comida_quiero_panchos.mp3"),
           A("Sanguches", "🥪", "comida_quiero_sanguches.mp3"),
           A("Torta", "🍰", "comida_quiero_torta.mp3"),
-          
         ],
       },
       {
@@ -122,7 +134,6 @@ export default function App() {
           A("Gaseosa", "🥤", "acc_quiero_gaseosa.mp3"),
           A("Casa", "🏠", "acc_quiero_casa.mp3"),
           A("Super", "🛒", "acc_quiero_super.mp3"),
-
         ],
       },
       {
@@ -147,79 +158,99 @@ export default function App() {
       <header className="header">
         <div>
           <h1 className="h1">Botonera</h1>
-          <p className="sub">
-            Botones grandes, emojis siempre visibles y panel rápido.
-          </p>
+          <p className="sub">Botones grandes, emojis siempre visibles y panel rápido.</p>
         </div>
       </header>
 
-      {/* Botones principales arriba */}
-      <section className="topRow">
-        {topPrimary.map((b) => (
-          <button
-            key={b.label}
-            className={`card card--xl ${b.label === "Sí" ? "yes" : "no"}`}
-            onClick={() => playSound(b.audio, b.label)}
-          >
-            <div className="emoji big">{b.emoji}</div>
-            <div className="label big">{b.label}</div>
-          </button>
-        ))}
-      </section>
+      {/* Layout: izquierda scrollea / derecha fija */}
+      <div className="layout">
+        <div className="main">
+          {/* Botones principales arriba */}
+          <section className="topRow">
+            {topPrimary.map((b) => (
+              <button
+                key={b.label}
+                className={`card card--xl ${b.label === "Sí" ? "yes" : "no"}`}
+                onClick={() => playSound(b.audio, b.label)}
+              >
+                <div className="emoji big">{b.emoji}</div>
+                <div className="label big">{b.label}</div>
+              </button>
+            ))}
+          </section>
 
-      {/* Panel rápido */}
-      <section className="panel">
-        <div className="panelTitle">Rápido</div>
-        <div className="grid quickGrid">
-          {quick.map((item) => (
+          {/* Panel rápido */}
+          <section className="panel">
+            <div className="panelTitle">Rápido</div>
+            <div className="grid quickGrid">
+              {quick.map((item) => (
+                <button
+                  key={item.label}
+                  className="card"
+                  onClick={() => playSound(item.audio, item.label)}
+                >
+                  <div className="emoji">{item.emoji}</div>
+                  <div className="label">{item.label}</div>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Categorías */}
+          <section className="panel">
+            <div className="panelTitle">Categorías</div>
+
+            <div className="accordion">
+              {categories.map((cat) => (
+                <details key={cat.name} className="category">
+                  <summary className="summary">
+                    <div className="summaryLeft">
+                      <div className="summaryEmoji">{cat.emoji}</div>
+                      <div className="summaryText">
+                        <div className="summaryTitle">{cat.name}</div>
+                        <div className="summaryDesc">{cat.desc}</div>
+                      </div>
+                    </div>
+                    <div className="chev">⌄</div>
+                  </summary>
+
+                  <div className="content">
+                    <div className="grid">
+                      {cat.items.map((item) => (
+                        <button
+                          key={item.label}
+                          className="card"
+                          onClick={() => playSound(item.audio, item.label)}
+                        >
+                          <div className="emoji">{item.emoji}</div>
+                          <div className="label">{item.label}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        
+
+        {/* ✅ Barra lateral fija (mobile fixed / desktop sticky) */}
+        <aside className="rail" aria-label="Accesos fijos">
+          {rail.map((b) => (
             <button
-              key={item.label}
-              className="card"
-              onClick={() => playSound(item.audio, item.label)}
+              key={b.label}
+              className="railBtn"
+              onClick={() => playSound(b.audio, b.label)}
+              aria-label={b.label}
+              title={b.label}
             >
-              <div className="emoji">{item.emoji}</div>
-              <div className="label">{item.label}</div>
+              <div className="railEmoji">{b.emoji}</div>
             </button>
           ))}
-        </div>
-      </section>
-
-      {/* Categorías */}
-      <section className="panel">
-        <div className="panelTitle">Categorías</div>
-
-        <div className="accordion">
-          {categories.map((cat) => (
-            <details key={cat.name} className="category">
-              <summary className="summary">
-                <div className="summaryLeft">
-                  <div className="summaryEmoji">{cat.emoji}</div>
-                  <div className="summaryText">
-                    <div className="summaryTitle">{cat.name}</div>
-                    <div className="summaryDesc">{cat.desc}</div>
-                  </div>
-                </div>
-                <div className="chev">⌄</div>
-              </summary>
-
-              <div className="content">
-                <div className="grid">
-                  {cat.items.map((item) => (
-                    <button
-                      key={item.label}
-                      className="card"
-                      onClick={() => playSound(item.audio, item.label)}
-                    >
-                      <div className="emoji">{item.emoji}</div>
-                      <div className="label">{item.label}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
-      </section>
+        </aside>
+      </div>
 
       {/* Toast */}
       <div className={`toast ${toast ? "show" : ""}`}>{toast}</div>
