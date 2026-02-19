@@ -1,0 +1,166 @@
+:root {
+  --accent: #3b82f6;
+  --bg-dark: #0f172a;
+  --glass: rgba(255, 255, 255, 0.05);
+}
+
+.pie-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 20px;
+  min-height: 100vh;
+  user-select: none;
+}
+
+/* Barra de frase superior */
+.display-area {
+  width: 100%;
+  max-width: 500px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 20px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+.phrase-output {
+  font-size: 24px;
+  font-weight: 700;
+  min-height: 60px;
+  color: white;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.placeholder { opacity: 0.3; font-weight: 400; }
+
+.controls { display: flex; gap: 10px; justify-content: center; }
+
+.btn-main {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-sub {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* El Círculo Mágico */
+.wheel-box {
+  position: relative;
+  width: min(85vw, 400px);
+  aspect-ratio: 1;
+  touch-action: none;
+}
+
+.radial-wheel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  /* Forzamos que el gradiente empiece exactamente arriba */
+  background: conic-gradient(from 0deg, var(--stops));
+  border: 6px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 60px rgba(0,0,0,0.6);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wheel-box.is-open .radial-wheel {
+  transform: scale(1.1);
+}
+
+.wheel-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.2) 100%);
+  pointer-events: none;
+}
+
+.wheel-center {
+  position: absolute;
+  inset: 30%;
+  background: var(--bg-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+.center-text {
+  color: white;
+  font-weight: 800;
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+}
+
+.node-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: 900;
+  font-size: clamp(14px, 4vw, 18px); /* Tamaño adaptativo */
+  text-shadow: 0 2px 8px rgba(0,0,0,1);
+  pointer-events: none;
+  width: 100px; /* Asegura que el texto largo no se rompa */
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.node-label.active {
+  font-size: 26px;
+  transform: translate(-50%, -50%) scale(1.2);
+  text-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+
+/* ... (mantiene la base anterior) ... */
+
+.node-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-weight: 800;
+  font-size: 16px; /* Bajamos un poco para que entren palabras largas */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  pointer-events: none;
+  transition: all 0.15s ease;
+  width: 80px; /* Ancho fijo para centrado perfecto */
+  text-align: center;
+  line-height: 1.1;
+}
+
+.node-label.active {
+  font-size: 22px;
+  font-weight: 900;
+  transform: translate(-50%, -50%) scale(1.15);
+}
+
+.wheel-center {
+  position: absolute;
+  inset: 28%; /* Un poco más grande el centro */
+  background: #0f172a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border: 4px solid rgba(255,255,255,0.05);
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+}
