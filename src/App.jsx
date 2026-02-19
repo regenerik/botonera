@@ -19,9 +19,7 @@ export default function App() {
       }
       const a = new Audio(file);
       audioRef.current = a;
-
       a.addEventListener("error", () => showToast(`No encontré: ${file}`));
-
       a.play()
         .then(() => label && showToast(label))
         .catch(() => showToast(`No pude reproducir: ${file}`));
@@ -30,20 +28,17 @@ export default function App() {
     }
   };
 
-  // Helper para que sea fácil editar
   const A = (label, emoji, file) => ({
     label,
     emoji,
     audio: `${import.meta.env.BASE_URL}audio/${file}`,
   });
 
-  // Botones gigantes arriba (SI / NO)
   const topPrimary = useMemo(
     () => [A("Sí", "👍", "acc_si.mp3"), A("No", "👎", "acc_no.mp3")],
     []
   );
 
-  // Panel rápido: lo más usado sin expandir
   const quick = useMemo(
     () => [
       A("Tengo hambre", "🍽️", "comida_tengo_hambre.mp3"),
@@ -58,7 +53,6 @@ export default function App() {
     []
   );
 
-  // ✅ Barra fija derecha (como tu mock)
   const rail = useMemo(
     () => [
       A("Sí", "👍", "acc_si.mp3"),
@@ -75,7 +69,6 @@ export default function App() {
     []
   );
 
-  // Categorías expandibles
   const categories = useMemo(
     () => [
       {
@@ -156,16 +149,12 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div>
-          <h1 className="h1">Botonera</h1>
-          <p className="sub">Botones grandes, emojis siempre visibles y panel rápido.</p>
-        </div>
+        <h1 className="h1">Botonera</h1>
+        <p className="sub">Botones grandes y panel rápido.</p>
       </header>
 
-      {/* Layout: izquierda scrollea / derecha fija */}
       <div className="layout">
-        <div className="main">
-          {/* Botones principales arriba */}
+        <main className="main">
           <section className="topRow">
             {topPrimary.map((b) => (
               <button
@@ -179,7 +168,6 @@ export default function App() {
             ))}
           </section>
 
-          {/* Panel rápido */}
           <section className="panel">
             <div className="panelTitle">Rápido</div>
             <div className="grid quickGrid">
@@ -196,10 +184,8 @@ export default function App() {
             </div>
           </section>
 
-          {/* Categorías */}
           <section className="panel">
             <div className="panelTitle">Categorías</div>
-
             <div className="accordion">
               {categories.map((cat) => (
                 <details key={cat.name} className="category">
@@ -213,7 +199,6 @@ export default function App() {
                     </div>
                     <div className="chev">⌄</div>
                   </summary>
-
                   <div className="content">
                     <div className="grid">
                       {cat.items.map((item) => (
@@ -232,27 +217,23 @@ export default function App() {
               ))}
             </div>
           </section>
+        </main>
+
+        <div className="rail-container">
+          <aside className="rail" aria-label="Accesos fijos">
+            {rail.map((b) => (
+              <button
+                key={b.label}
+                className="railBtn"
+                onClick={() => playSound(b.audio, b.label)}
+              >
+                <span className="railEmoji">{b.emoji}</span>
+              </button>
+            ))}
+          </aside>
         </div>
-
-        
-
-        {/* ✅ Barra lateral fija (mobile fixed / desktop sticky) */}
-        <aside className="rail" aria-label="Accesos fijos">
-          {rail.map((b) => (
-            <button
-              key={b.label}
-              className="railBtn"
-              onClick={() => playSound(b.audio, b.label)}
-              aria-label={b.label}
-              title={b.label}
-            >
-              <div className="railEmoji">{b.emoji}</div>
-            </button>
-          ))}
-        </aside>
       </div>
 
-      {/* Toast */}
       <div className={`toast ${toast ? "show" : ""}`}>{toast}</div>
     </div>
   );
