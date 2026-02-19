@@ -34,7 +34,7 @@ export default function App() {
   const A = (label, emoji, file) => ({
     label,
     emoji,
-    audio: `/src/assets/audio/${file}`,
+    audio: `${import.meta.env.BASE_URL}audio/${file}`,
   });
 
   // Botones gigantes arriba (SI / NO)
