@@ -66,7 +66,7 @@ export default function App() {
   const categories = useMemo(
     () => [
       {
-        name: "Comida",
+        name: "Comidas",
         emoji: "🍽️",
         desc: "Comer, tomar, más o no más",
         items: [
